@@ -1,5 +1,3 @@
-pip install -r requirements.txt
-streamlit run script_adı.py
 import streamlit as st
 import pandas as pd
 
