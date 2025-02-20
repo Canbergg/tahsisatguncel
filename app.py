@@ -9,11 +9,11 @@ def process_excel(file):
     df.insert(df.columns.get_loc("MaxNeedForSalesParam") + 1, "İlişki", None)
     
     # Unique Code hesaplama
-    if 'StoreName' in df.columns and 'AE' in df.columns:
-        unique_store_count = df['StoreName'].nunique()
+    if 'Mağaza Adı' in df.columns and 'AE' in df.columns:
+        unique_store_count = df['Mağaza Adı'].nunique()
         df['Unique Code'] = df['AE'].map(df['AE'].value_counts()) / unique_store_count
     else:
-        st.error("Gerekli sütunlar eksik: 'StoreName' ve 'AE' sütunlarını kontrol edin.")
+        st.error("Gerekli sütunlar eksik: 'Mağaza Adı' ve 'AE' sütunlarını kontrol edin.")
     
     # İlişki sütunu doldurma
     if 'AF' in df.columns:
