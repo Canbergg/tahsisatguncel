@@ -52,12 +52,24 @@ uploaded_file = st.file_uploader("Excel dosyanızı yükleyin", type=["xlsx", "x
 if uploaded_file is not None:
     try:
         processed_df = process_excel(uploaded_file)
+        
+        # Unique Count değerlerine göre ayırma
+        tekli_df = processed_df[processed_df['Unique Count'] == 1]
+        ciftli_df = processed_df[processed_df['Unique Count'] == 2]
+        uclu_df = processed_df[processed_df['Unique Count'] == 3]
+        
+        # Excel dosyasını birden fazla sayfa olarak kaydetme
+        output_file = "processed_data.xlsx"
+        with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+            processed_df.to_excel(writer, sheet_name='Tüm Veriler', index=False)
+            tekli_df.to_excel(writer, sheet_name='Tekli', index=False)
+            ciftli_df.to_excel(writer, sheet_name='Çift', index=False)
+            uclu_df.to_excel(writer, sheet_name='Üçlü', index=False)
+        
         st.success("Dosya başarıyla işlendi!")
         st.dataframe(processed_df)
         
         # İşlenmiş dosyayı indirme bağlantısı oluşturma
-        output_file = "processed_data.xlsx"
-        processed_df.to_excel(output_file, index=False)
         with open(output_file, "rb") as file:
             st.download_button("İşlenmiş dosyayı indir", file, file_name=output_file)
     except Exception as e:
