@@ -58,13 +58,20 @@ if uploaded_file is not None:
         ciftli_df = processed_df[processed_df['Unique Count'] == 2].copy()
         uclu_df = processed_df[processed_df['Unique Count'] == 3].copy()
         
-        # İhtiyaç Hesabı hesaplaması
-        tekli_df['İhtiyaç Hesabı'] = tekli_df.apply(lambda row: max(
-            (round((row['L'] / row['U']) * (row['AC'] if row['AC'] > 0 else row['AK']) + row['S'] + row['AB'] - row['P'], 0)
-            if row['S'] > 0 else 0), 0), axis=1)
+        # Gerekli sütunları kontrol et
+        required_columns = ['L', 'U', 'AC', 'AK', 'S', 'AB', 'P', 'AP']
+        missing_columns = [col for col in required_columns if col not in tekli_df.columns]
         
-        # Fark hesaplaması
-        tekli_df['Fark'] = tekli_df['AP'] - tekli_df['İhtiyaç Hesabı']
+        if missing_columns:
+            st.error(f"Eksik sütunlar tespit edildi: {', '.join(missing_columns)}. Lütfen dosyanızı kontrol edin.")
+        else:
+            # İhtiyaç Hesabı hesaplaması
+            tekli_df['İhtiyaç Hesabı'] = tekli_df.apply(lambda row: max(
+                (round((row['L'] / row['U']) * (row['AC'] if row['AC'] > 0 else row['AK']) + row['S'] + row['AB'] - row['P'], 0)
+                if row['S'] > 0 else 0), 0), axis=1)
+            
+            # Fark hesaplaması
+            tekli_df['Fark'] = tekli_df['AP'] - tekli_df['İhtiyaç Hesabı']
         
         # Excel dosyasını birden fazla sayfa olarak kaydetme
         output_file = "processed_data.xlsx"
