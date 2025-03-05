@@ -60,7 +60,7 @@ if uploaded_file is not None:
         
         # Excel dosyasını birden fazla sayfa olarak kaydetme
         output_file = "processed_data.xlsx"
-        with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+        with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
             processed_df.to_excel(writer, sheet_name='Tüm Veriler', index=False)
             tekli_df.to_excel(writer, sheet_name='Tekli', index=False)
             ciftli_df.to_excel(writer, sheet_name='Çift', index=False)
