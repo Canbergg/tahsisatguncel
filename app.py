@@ -12,8 +12,17 @@ def process_excel(file):
     af_column = columns[31]  # AF sütunu (32. sütun, 0 indeksli olduğu için 31)
     
     # Yeni sütunları ekleyelim
+    df.insert(df.columns.get_loc("MaxNeedForSalesParam"), "İlişki", None)
     df.insert(df.columns.get_loc("MaxNeedForSalesParam"), "Unique Count", None)
-    df.insert(df.columns.get_loc("MaxNeedForSalesParam") + 1, "İlişki", None)
+    
+    # Sütun sırasını düzelterek tekrar oluştur
+    column_order = df.columns.tolist()
+    column_order.remove("Unique Count")
+    column_order.remove("İlişki")
+    insert_loc = column_order.index("MaxNeedForSalesParam")
+    column_order.insert(insert_loc, "İlişki")
+    column_order.insert(insert_loc, "Unique Count")
+    df = df[column_order]
     
     # Unique Count hesaplama
     if 'Mağaza Adı' in df.columns:
