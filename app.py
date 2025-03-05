@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-from openpyxl import load_workbook
-from openpyxl.utils.dataframe import dataframe_to_rows
 
 def process_excel(file):
     df = pd.read_excel(file)
@@ -56,9 +54,17 @@ if uploaded_file is not None:
         processed_df = process_excel(uploaded_file)
         
         # Unique Count değerlerine göre ayırma
-        tekli_df = processed_df[processed_df['Unique Count'] == 1]
-        ciftli_df = processed_df[processed_df['Unique Count'] == 2]
-        uclu_df = processed_df[processed_df['Unique Count'] == 3]
+        tekli_df = processed_df[processed_df['Unique Count'] == 1].copy()
+        ciftli_df = processed_df[processed_df['Unique Count'] == 2].copy()
+        uclu_df = processed_df[processed_df['Unique Count'] == 3].copy()
+        
+        # İhtiyaç Hesabı hesaplaması
+        tekli_df['İhtiyaç Hesabı'] = tekli_df.apply(lambda row: max(
+            (round((row['L'] / row['U']) * (row['AC'] if row['AC'] > 0 else row['AK']) + row['S'] + row['AB'] - row['P'], 0)
+            if row['S'] > 0 else 0), 0), axis=1)
+        
+        # Fark hesaplaması
+        tekli_df['Fark'] = tekli_df['AP'] - tekli_df['İhtiyaç Hesabı']
         
         # Excel dosyasını birden fazla sayfa olarak kaydetme
         output_file = "processed_data.xlsx"
@@ -67,18 +73,6 @@ if uploaded_file is not None:
             tekli_df.to_excel(writer, sheet_name='Tekli', index=False)
             ciftli_df.to_excel(writer, sheet_name='Çift', index=False)
             uclu_df.to_excel(writer, sheet_name='Üçlü', index=False)
-            writer._save()
-        
-        # Excel dosyasına formülleri ekleme
-        wb = load_workbook(output_file)
-        ws = wb['Tekli']
-        ws['AQ1'] = "İhtiyaç Hesabı"
-        ws['AR1'] = "Fark"
-        for row in range(2, ws.max_row + 1):
-            ws[f"AQ{row}"] = f"=MAX(IF(S{row}>0,ROUNDUP(IFERROR(L{row}/U{row},0)*IF(AC{row}>0,AC{row},AK{row}),0)+S{row}+AB{row}-P{row},0),0)"
-            ws[f"AR{row}"] = f"=AP{row}-AQ{row}"
-        
-        wb.save(output_file)
         
         st.success("Dosya başarıyla işlendi!")
         st.dataframe(processed_df)
