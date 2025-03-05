@@ -12,13 +12,13 @@ def process_excel(file):
     af_column = columns[31]  # AF sütunu (32. sütun, 0 indeksli olduğu için 31)
     
     # Yeni sütunları ekleyelim
-    df.insert(df.columns.get_loc("MaxNeedForSalesParam"), "Unique Code", None)
-    df.insert(df.columns.get_loc("MaxNeedForSalesParam") + 1, "İlişki", None)
+    df.insert(df.columns.get_loc("MaxNeedForSalesParam"), "İlişki", None)
+    df.insert(df.columns.get_loc("MaxNeedForSalesParam"), "Unique Count", None)
     
-    # Unique Code hesaplama
+    # Unique Count hesaplama
     if 'Mağaza Adı' in df.columns:
         unique_store_count = df['Mağaza Adı'].nunique()
-        df['Unique Code'] = df[ae_column].map(df[ae_column].value_counts()) / unique_store_count
+        df['Unique Count'] = df[ae_column].map(df[ae_column].value_counts()) / unique_store_count
     else:
         st.error("'Mağaza Adı' sütunu eksik, lütfen dosyanızı kontrol edin.")
     
