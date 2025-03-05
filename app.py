@@ -37,6 +37,13 @@ def process_excel(file):
     else:
         st.error("AF sütunu eksik, lütfen dosyanızı kontrol edin.")
     
+    # Özel sıralama işlemi
+    sort_columns = ['Mağaza Adı', 'ItAtt48', 'Ürün Brüt Ağırlık']
+    if all(col in df.columns for col in sort_columns):
+        df = df.sort_values(by=['Mağaza Adı', 'ItAtt48', 'Ürün Brüt Ağırlık'], ascending=[True, True, True])
+    else:
+        st.error("Sıralama için gerekli sütunlar eksik: 'Mağaza Adı', 'ItAtt48' veya 'Ürün Brüt Ağırlık'")
+    
     return df
 
 st.title("Excel Veri İşleme Uygulaması")
