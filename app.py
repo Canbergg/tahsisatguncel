@@ -75,7 +75,6 @@ if uploaded_file is not None:
             uclu_df.to_excel(writer, sheet_name='Üçlü', index=False)
         
         st.success("Dosya başarıyla işlendi!")
-        st.dataframe(processed_df)
         
         # İşlenmiş dosyayı indirme bağlantısı oluşturma
         with open(output_file, "rb") as file:
