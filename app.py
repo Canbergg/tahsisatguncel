@@ -73,7 +73,7 @@ if uploaded_file is not None:
         ws['AQ1'] = "İhtiyaç Hesabı"
         ws['AR1'] = "Fark"
         for row in range(2, ws.max_row + 1):
-            ws[f"AQ{row}"] = f"=MAX(IF(S{row}>0;ROUNDUP(IFERROR(L{row}/U{row};0)*IF(AC{row}>0;AC{row};AK{row});0)+S{row}+AB{row}-P{row};0);0)"
+            ws[f"AQ{row}"] = f"=MAX(IF(S{row}>0,ROUNDUP(IFERROR(L{row}/U{row},0)*IF(AC{row}>0,AC{row},AK{row}),0)+S{row}+AB{row}-P{row},0),0)"
             ws[f"AR{row}"] = f"=AP{row}-AQ{row}"
         
         wb.save(output_file)
