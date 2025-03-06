@@ -78,11 +78,11 @@ if uploaded_file is not None:
         
         for row in range(2, ws.max_row, 2):
             ws.merge_cells(f"AQ{row}:AQ{row+1}")
-            ws[f"AQ{row}"] = f"=MAX(IF(SUM(S{row}:S{row+1})>0,IF(AH{row}=\"Muadil\",ROUNDUP(IFERROR(SUM(L{row}:L{row+1})/MAX(U{row}:U{row+1})*IF(AC{row+1}>0,AC{row+1},AK{row+1}),0),0)+S{row+1}+SUM(AB{row}:AB{row+1})-SUM(P{row}:P{row+1}),ROUNDUP((IFERROR(L{row}/U{row},0)+IFERROR(L{row+1}/U{row+1},0))*IF(AC{row+1}>0,AC{row+1},AK{row+1}),0)+S{row+1}+SUM(AB{row}:AB{row+1})-P{row+1}),0),0)"
-            ws[f"AR{row}"] = f"=IF(AQ{row+1}<>\"\",AQ{row+1},AR{row})"
+            ws[f"AQ{row}"] = f"=MAX(IF(SUM(S{row}:S{row+1})>0,IF(AH{row}="Muadil",ROUNDUP(IFERROR(SUM(L{row}:L{row+1})/MAX(U{row}:U{row+1})*IF(AC{row+1}>0,AC{row+1},AK{row+1}),0),0)+S{row+1}+SUM(AB{row}:AB{row+1})-SUM(P{row}:P{row+1}),ROUNDUP((IFERROR(L{row}/U{row},0)+IFERROR(L{row+1}/U{row+1},0))*IF(AC{row+1}>0,AC{row+1},AK{row+1}),0)+S{row+1}+SUM(AB{row}:AB{row+1})-P{row+1}),0),0)"
+            ws[f"AR{row}"] = f"=IF(AQ{row}<>"",AQ{row},AR{row-1})"
             ws.merge_cells(f"AS{row}:AS{row+1}")
             ws[f"AS{row}"] = f"=AP{row}+AP{row+1}"
-            ws[f"AT{row}"] = f"=IF(AS{row+1}<>\"\",AS{row+1},AT{row})"
+            ws[f"AT{row}"] = f"=IF(AS{row}<>"",AS{row},AT{row-1})"
             ws[f"AU{row}"] = f"=AT{row}-AR{row}"
         
         wb.save(output_file)
