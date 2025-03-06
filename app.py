@@ -67,6 +67,9 @@ if uploaded_file is not None:
             ciftli_df.to_excel(writer, sheet_name='Çift', index=False)
             uclu_df.to_excel(writer, sheet_name='Üçlü', index=False)
         
+        # Dosyayı kapat ve tekrar aç
+        del writer
+        
         # Excel dosyasına formülleri ekleme
         wb = load_workbook(output_file)
         ws = wb['Çift']
@@ -93,6 +96,7 @@ if uploaded_file is not None:
             ws[f"AU{row}"] = f"=AT{row}-AR{row}"
         
         wb.save(output_file)
+        wb.close()
         
         st.success("Dosya başarıyla işlendi!")
         
